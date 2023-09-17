@@ -109,7 +109,6 @@ usb-creator==0.3.7
 vboxapi==1.0
 wadllib==1.3.6
 Werkzeug==2.3.7
-WoeUSB-ng @ file:///home/vitor/Downloads/WoeUSB-ng-master
 wxPython==4.0.7
 xdg==5
 xkit==0.0.0
