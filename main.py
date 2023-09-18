@@ -38,3 +38,7 @@ async def index():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+#produção
+#gunincorn --bind 0.0.0.0:5000 main:app
+#gunicorn main:app 
