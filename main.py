@@ -37,4 +37,4 @@ async def index():
     return render_template('pages/home.html', title='Home')
 
 if __name__ == '__main__':
-    app.run(debug=True, port=env("PORT"))
+    app.run(debug=True)
