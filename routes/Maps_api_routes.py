@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from os import getenv as env
 from datetime import datetime
+from services.Maps_api import Maps_api
 import googlemaps
 
 gmaps = googlemaps.Client(key=env("MAPS_KEY"))
@@ -60,3 +61,32 @@ async def geocode():
     geocode_result = gmaps.geocode(address)
     
     return jsonify(geocode_result), 200
+
+@maps_api_routes.route("/places", methods=['POST'])
+async def places():
+    data = request.get_json()
+    location_address = data.get("location")
+
+    if not location_address:
+        return jsonify({"error": "Invalid request parameters"}), 400
+
+    location_result = gmaps.geocode(location_address)[0].get("geometry").get("location")
+    location_lat_lng = f"{location_result.get('lat')},{location_result.get('lng')}"
+    maps_api = Maps_api()
+
+    brute_places = maps_api.get_places(location_lat_lng)
+    places = []
+
+    for place in brute_places.get("results"):
+        if place.get("opening_hours") and place.get("opening_hours").get("open_now"):
+            places.append({
+                "name": place.get("name"),
+                "address": place.get("vicinity"),
+                "rating": place.get("rating"),
+                "types": place.get("types"),
+                "location": place.get("geometry").get("location"),
+                "open_now": place.get("opening_hours").get("open_now")
+            })
+
+    return jsonify(places), 200
+    
