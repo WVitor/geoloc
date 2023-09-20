@@ -66,15 +66,16 @@ async def geocode():
 async def places():
     data = request.get_json()
     location_address = data.get("location")
+    radius = data.get("radius")
 
-    if not location_address:
+    if not location_address or not radius:
         return jsonify({"error": "Invalid request parameters"}), 400
 
     location_result = gmaps.geocode(location_address)[0].get("geometry").get("location")
     location_lat_lng = f"{location_result.get('lat')},{location_result.get('lng')}"
     maps_api = Maps_api()
 
-    brute_places = maps_api.get_places(location_lat_lng)
+    brute_places = maps_api.get_places(location_lat_lng, radius)
     places = []
 
     for place in brute_places.get("results"):
