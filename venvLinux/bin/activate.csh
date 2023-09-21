@@ -8,7 +8,7 @@ alias deactivate 'test $?_OLD_VIRTUAL_PATH != 0 && setenv PATH "$_OLD_VIRTUAL_PA
 # Unset irrelevant variables.
 deactivate nondestructive
 
-setenv VIRTUAL_ENV "/home/vitor/Documentos/GitHub/geoloc-api/appenv"
+setenv VIRTUAL_ENV "/home/vitorwilson/github-desktop/geoloc/venvLinux"
 
 set _OLD_VIRTUAL_PATH="$PATH"
 setenv PATH "$VIRTUAL_ENV/bin:$PATH"
@@ -17,8 +17,8 @@ setenv PATH "$VIRTUAL_ENV/bin:$PATH"
 set _OLD_VIRTUAL_PROMPT="$prompt"
 
 if (! "$?VIRTUAL_ENV_DISABLE_PROMPT") then
-    set prompt = "(appenv) $prompt"
-    setenv VIRTUAL_ENV_PROMPT "(appenv) "
+    set prompt = "(venvLinux) $prompt"
+    setenv VIRTUAL_ENV_PROMPT "(venvLinux) "
 endif
 
 alias pydoc python -m pydoc
