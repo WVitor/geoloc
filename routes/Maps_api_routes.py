@@ -47,7 +47,7 @@ async def directions():
         num_count+= distancia[0] / duracao[0]
 
     num_media = int(num_count / len(steps))
-    print(num_list)
+    print(directions_result)
     return jsonify(directions_result), 200
  
 @maps_api_routes.route("/geocode", methods=['POST'])

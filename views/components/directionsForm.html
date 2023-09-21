@@ -1,0 +1,18 @@
+<form action="/maps/directions" method="POST" enctype="application/json">
+    {% set input_name = "origin" %}
+    {% set input_type = "text" %}
+    {% set input_placeholder = "Insira a origem." %}
+    {% include "components/customInput.html" %}
+
+    {% set input_name = "destination" %}
+    {% set input_type = "text" %}
+    {% set input_placeholder = "Insira o destino." %}
+    {% include "components/customInput.html" %}
+
+    {% set select_name = "mode" %}
+    {% include "components/customSelection.html" %}
+
+    {% set btn_type = "submit" %}
+    {% set btn_text = "Enviar" %}
+    {% include "components/button.html" %}
+</form>

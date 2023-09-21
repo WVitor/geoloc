@@ -44,4 +44,4 @@ if __name__ == '__main__':
 #gunicorn main:app 
 
 #producao windows
-#waitress-serve --listen=127.0.0.1:5000 main:app
+#waitress-serve --listen=*:5000 main:app
