@@ -39,6 +39,9 @@ async def index():
 if __name__ == '__main__':
     app.run(debug=True)
 
-#produção
+#produção linux
 #gunincorn --bind 0.0.0.0:5000 main:app
 #gunicorn main:app 
+
+#producao windows
+#waitress-serve --listen=127.0.0.1:5000 main:app
