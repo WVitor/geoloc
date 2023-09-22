@@ -1,0 +1,26 @@
+{% extends 'index.html' %}
+
+{% block content %}
+    {{title}}
+    <p>Busque por lugares proximos a você.</p>
+    <p>Este é o conteúdo da página de lugares.</p>
+    {% if lugares %}
+        <p>Foram encontrados {{ lugares|length }} lugares.</p>
+    {% endif %}
+    <div>
+        {% include "components/placesForm.html" %}
+    </div>
+    
+    {% for lugar in lugares %}
+    <li>
+        <strong>Nome:</strong> {{ lugar.name }}<br>
+        <strong>Endereço:</strong> {{ lugar.address }}<br>
+        <strong>Score:</strong> {{ lugar.rating }}<br>
+        <strong>Tipo:</strong> {{ lugar.types }}<br>
+        <strong>Localização:</strong> {{ lugar.location }}<br>
+        <strong>Aberto:</strong> {{ lugar.open_now }}<br>
+    </li>
+    {% endfor %}
+   
+
+{% endblock %}

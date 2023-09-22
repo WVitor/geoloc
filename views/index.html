@@ -1,26 +1,29 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/x-icon">
     <title>Geoloc</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/tailwind.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-    <header>
-        <h1 class="text-3xl font-bold underline p-4">Geoloc </h1>
-        <nav>
-            <ul>
-                <li><a href="/">Página Inicial</a></li>
-                <li><a href="/contato">Contato</a></li>
-            </ul>
-        </nav>
-    </header>
-    
-    <main>
+    <nav id="navbar" class="p-3.5 mb-4 flex justify-between items-center bg-gray-800 text-white border-b border-yellow-300">
+        <a href="/" id="logo">
+            <img src="{{ url_for('static', filename='img/icon.png') }}" alt="Geoloc" width="40px" height="40px">
+        </a>
+        <ul class="flex list-none">    
+            <li class="ml-4"><a href="/" class="text-white no-underline transition duration-500 font-bold hover:text-yellow-300">Home</a></li>
+            <li class="ml-4"><a href="/places" class="text-white no-underline transition duration-500 font-bold hover:text-yellow-300">Lugares</a></li>
+        </ul>
+    </nav>
+    <main class="container">
         {% block content %}{% endblock %}
     </main>
-
     <footer>
-        <p>&copy; 2023 Geoloc</p>
+        <p><span>Geoloc</span> &copy; 2023</p>
     </footer>
 </body>
 </html>
