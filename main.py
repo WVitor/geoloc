@@ -62,7 +62,7 @@ async def places():
                     "rating": place.get("rating"),
                     "types": place.get("types"),
                     "location": place.get("geometry").get("location"),
-                    "open_now": place.get("opening_hours").get("open_now")
+                    "status": 'Aberto'
             })
         print(lugares, "isso ai")
         
