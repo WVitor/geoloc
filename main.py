@@ -43,11 +43,11 @@ async def places():
     if request.method == 'POST':
         lugares.clear()
         location_address = request.form.get("location")
-        radius = request.form.get("radius")
+        radius = 5000
 
         if not location_address or not radius:
             return redirect(url_for('places'))
-        
+
         location_result = gmaps.geocode(location_address)[0].get("geometry").get("location")
         location_lat_lng = f"{location_result.get('lat')},{location_result.get('lng')}"
         maps_api = Maps_api()
@@ -64,6 +64,8 @@ async def places():
                     "location": place.get("geometry").get("location"),
                     "open_now": place.get("opening_hours").get("open_now")
             })
+        print(lugares, "isso ai")
+        
         return redirect(url_for('places'))
     elif request.method == 'GET':
         return render_template('pages/places.html', title='Lugares', lugares=lugares)

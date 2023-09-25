@@ -6,10 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/x-icon">
     <title>Geoloc</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/tailwind.css') }}">
+   <!----><link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/tailwind.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="{{ url_for('static', filename='js/location.js')}}"></script>
 </head>
 <body>
+    <div id="loading" class="loading-container" >
+        <svg class="loading-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+            <circle cx="50" cy="50" r="45" fill="none" stroke="#007bff" stroke-width="6"></circle>
+        </svg>
+    </div>
+    
     <nav id="navbar" class="p-3.5 mb-4 flex justify-between items-center bg-gray-800 text-white border-b border-yellow-300">
         <a href="/" id="logo">
             <img src="{{ url_for('static', filename='img/icon.png') }}" alt="Geoloc" width="40px" height="40px">

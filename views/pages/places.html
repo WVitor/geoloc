@@ -1,14 +1,16 @@
 {% extends 'index.html' %}
 
 {% block content %}
-    {{title}}
-    <p>Busque por lugares proximos a você.</p>
-    <p>Este é o conteúdo da página de lugares.</p>
-    {% if lugares %}
-        <p>Foram encontrados {{ lugares|length }} lugares.</p>
-    {% endif %}
-    <div>
+    <div class="place-header">
+        {% if lugares %}
+            <p class="font-helvetica"  style="margin-bottom: 10px; color: #4A49C5; font-size: 35px;">Foram encontrados {{ lugares|length }} lugares.</p>
+        {% else %}
+            <h2 class="font-helvetica" style="margin-bottom: 10px; color: #4A49C5; font-size: 35px;">{{title}}</h2>
+        {% endif %}
         {% include "components/placesForm.html" %}
+    </div>
+    <div class="title-container">
+        <h2 style="color: #4A49C5; font-size: 25px;" class="font-helvetica" >Busque lugares proximos a você.</h2>
     </div>
     
     {% for lugar in lugares %}

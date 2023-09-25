@@ -1,15 +1,9 @@
-<form method="POST">
-    {% set input_name = "location" %}
-    {% set input_type = "text" %}
-    {% set input_placeholder = "Insira a sua localização." %}
-    {% include "components/customInput.html" %}
-
-    {% set input_name = "radius" %}
-    {% set input_type = "number" %}
-    {% set input_placeholder = "Insira o raio de distancia." %}
-    {% include "components/customInput.html" %}
-
-    {% set btn_type = "submit" %}
-    {% set btn_text = "Enviar" %}
-    {% include "components/button.html" %}
+<form method="POST" style="display: flex;justify-content: center;">
+    <div class="location-div">
+        <input id="SearchLocationId" type="text" name="location" placeholder="Insira a sua localização." >
+        <button type="button" id="btnLocation" class="btn btn-primary" style="color: #4A49C5; background: none; border: none; cursor: pointer;" onclick="onClickLocation()">
+            <i class="fas fa-map-marker-alt location-icon"></i>
+        </button>
+    </div>
+    <button type="submit" class="submit-btn" style="margin: 5px; border-radius: 15px;">Buscar</button>
 </form>

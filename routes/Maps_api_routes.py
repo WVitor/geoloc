@@ -91,3 +91,15 @@ async def places():
 
     return jsonify(places), 200
     
+@maps_api_routes.route("reverse-geocode", methods=['POST'])
+async def reverse_geocode():
+    data = request.get_json()
+    lat = data.get("lat")
+    lng = data.get("lng")
+
+    if not lat or not lng:
+        return jsonify({"error": "Invalid request parameters"}), 400
+    
+    reverse_geocode_result = gmaps.reverse_geocode((lat, lng))
+
+    return jsonify(reverse_geocode_result), 200
