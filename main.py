@@ -55,16 +55,17 @@ async def places():
     if request.method == 'POST':
         lugares.clear()
         location_address = request.form.get("location")
+        location_place = request.form.get("place")
         radius = 5000
 
-        if not location_address or not radius:
+        if not location_address or not location_place:
             return redirect(url_for('places'))
 
         location_result = gmaps.geocode(location_address)[0].get("geometry").get("location")
         location_lat_lng = f"{location_result.get('lat')},{location_result.get('lng')}"
         maps_api = Maps_api()
 
-        brute_places = maps_api.get_places(location_lat_lng, radius)
+        brute_places = maps_api.get_places(location_lat_lng, location_place, radius)
 
         for place in brute_places.get("results"):
             if place.get("opening_hours") and place.get("opening_hours").get("open_now"):

@@ -11,7 +11,7 @@ class Maps_api:
         self.url = "https://maps.googleapis.com/maps/api"
         self.key = env("MAPS_KEY")
 
-    def get_places(self, location: str, radius: int = 2000, type: str = "restaurant"):
+    def get_places(self, location: str, type: str, radius: int):
         params = {
             "location": location,
             "radius": radius,
