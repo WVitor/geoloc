@@ -8,7 +8,7 @@ from datetime import timedelta
 from os import getenv as env
 from services.Maps_api import Maps_api
 from flask_cors import CORS
-from flask_session import Session
+#from flask_session import Session
 import googlemaps
 
 
@@ -20,11 +20,13 @@ gmaps = googlemaps.Client(key=env("MAPS_KEY"))
 
 app = Flask(__name__, template_folder='views', static_folder='static')
 
+### SESSION CONFIG ###
 # app.config['SESSION_TYPE'] = 'filesystem'
 # app.config['SESSION_PERMANENT'] = False
 # Session(app)
 # app.secret_key = env("SESSION_SECRET")
 
+### CORS CONFIG ###
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 ### JWT CONFIG ###
@@ -74,7 +76,6 @@ async def places():
                     "location": place.get("geometry").get("location"),
                     "status": 'Aberto'
             })
-        print(lugares, "isso ai")
         
         return render_template('pages/places.html', title='Lugares', lugares=lugares)
         #return redirect(url_for('places', lugares=lugares))
