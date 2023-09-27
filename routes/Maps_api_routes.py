@@ -91,7 +91,7 @@ async def places():
 
     return jsonify(places), 200
     
-@maps_api_routes.route("reverse-geocode", methods=['POST'])
+@maps_api_routes.route("/reverse-geocode", methods=['POST'])
 async def reverse_geocode():
     data = request.get_json()
     lat = data.get("lat")

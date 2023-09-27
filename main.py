@@ -7,7 +7,9 @@ import requests as req
 from datetime import timedelta
 from os import getenv as env
 from services.Maps_api import Maps_api
+from flask_cors import CORS
 import googlemaps
+
 
 from routes.Weather_api_routes import weather_api_routes
 from routes.Maps_api_routes import maps_api_routes
@@ -16,6 +18,8 @@ from routes.Autentication_routes import autentication_routes
 gmaps = googlemaps.Client(key=env("MAPS_KEY"))
 
 app = Flask(__name__, template_folder='views', static_folder='static')
+
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 ### JWT CONFIG ###
 app.config['JWT_SECRET_KEY'] = env("JWT_SECRET")
