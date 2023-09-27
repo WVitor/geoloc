@@ -8,6 +8,7 @@ from datetime import timedelta
 from os import getenv as env
 from services.Maps_api import Maps_api
 from flask_cors import CORS
+from flask_session import Session
 import googlemaps
 
 
@@ -18,6 +19,11 @@ from routes.Autentication_routes import autentication_routes
 gmaps = googlemaps.Client(key=env("MAPS_KEY"))
 
 app = Flask(__name__, template_folder='views', static_folder='static')
+
+# app.config['SESSION_TYPE'] = 'filesystem'
+# app.config['SESSION_PERMANENT'] = False
+# Session(app)
+# app.secret_key = env("SESSION_SECRET")
 
 CORS(app, resources={r"/*": {"origins": "*"}})
 
@@ -41,9 +47,9 @@ async def contato():
     return render_template('pages/contato.html', title='Contato')
 
 
-lugares = []
 @app.route("/places", methods=['GET', "POST"])
 async def places():
+    lugares = []
     if request.method == 'POST':
         lugares.clear()
         location_address = request.form.get("location")
@@ -70,7 +76,8 @@ async def places():
             })
         print(lugares, "isso ai")
         
-        return redirect(url_for('places'))
+        return render_template('pages/places.html', title='Lugares', lugares=lugares)
+        #return redirect(url_for('places', lugares=lugares))
     elif request.method == 'GET':
         return render_template('pages/places.html', title='Lugares', lugares=lugares)
 
@@ -87,3 +94,5 @@ if __name__ == '__main__':
 
 #producao windows
 #waitress-serve --listen=*:5000 main:app
+
+#pip freeze -> requirements.txt
