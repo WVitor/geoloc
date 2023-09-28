@@ -66,6 +66,7 @@ async def geocode():
 async def places():
     data = request.get_json()
     location_address = data.get("location")
+    location_type = data.get("type")
     radius = data.get("radius")
 
     if not location_address or not radius:
@@ -75,7 +76,7 @@ async def places():
     location_lat_lng = f"{location_result.get('lat')},{location_result.get('lng')}"
     maps_api = Maps_api()
 
-    brute_places = maps_api.get_places(location_lat_lng, radius)
+    brute_places = maps_api.get_places(location_lat_lng, location_type, radius)
     places = []
 
     for place in brute_places.get("results"):
@@ -89,7 +90,7 @@ async def places():
                 "open_now": place.get("opening_hours").get("open_now")
             })
 
-    return jsonify(places), 200
+    return jsonify(brute_places), 200
     
 @maps_api_routes.route("/reverse-geocode", methods=['POST'])
 async def reverse_geocode():
