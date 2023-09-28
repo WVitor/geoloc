@@ -30,9 +30,8 @@ async function FindLocation(lat, lng){
 async function LocationSucess(position){
     const loadingElement = document.getElementById('loading');
     loadingElement.style.display = 'flex';
-    FindLocation(position.coords.latitude, position.coords.longitude);
+    await FindLocation(position.coords.latitude, position.coords.longitude);
     loadingElement.style.display = 'none';
-
 }
 
 function LocationError(err){
@@ -40,7 +39,8 @@ function LocationError(err){
 }
 
 async function onClickLocation(){
-    navigator.geolocation.getCurrentPosition(LocationSucess, LocationError);
+    navigator.geolocation.watchPosition(LocationSucess, LocationError);
+    //navigator.geolocation.getCurrentPosition(LocationSucess, LocationError);
 }
 
 
