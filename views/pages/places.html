@@ -9,20 +9,55 @@
         {% endif %}
         {% include "components/placesForm.html" %}
     </div>
+    
     <div class="title-container">
         <h2 style="color: #4A49C5; font-size: 25px;" class="font-helvetica" >Busque lugares proximos a você.</h2>
     </div>
-    
-    {% for lugar in lugares %}
-    <li>
-        <strong>Nome:</strong> {{ lugar.name }}<br>
-        <strong>Endereço:</strong> {{ lugar.address }}<br>
-        <strong>Score:</strong> {{ lugar.rating }}<br>
-        <strong>Tipo:</strong> {{ lugar.types }}<br>
-        <strong>Localização:</strong> {{ lugar.location }}<br>
-        <strong>Status:</strong> {{ lugar.status }}<br>
-    </li>
-    {% endfor %}
-   
 
+    <div class="place-main"> 
+        {% for lugar in lugares %}
+        <div class = "card">
+            <img src="{{lugar.photo}}" class="card-img" alt="{{lugar.name}}">
+            <div class="card-content">
+                <h2 class="card-h2">
+                    {{lugar.name}}
+                </h2>
+                <p class="card-p">
+                    Endereço: {{lugar.address}}
+                </p>
+                <a href="https://www.google.com/maps/search/{{lugar.address}}" target="_blank" class="card-a" style="inset: auto auto 40px 30px;">
+                    Maps
+                </a>
+                <a href="https://waze.com/ul?q={{lugar.address}}" target="_blank" class="card-a" style="inset: auto auto 40px 100px;">
+                    Waze
+                </a>
+                <button onclick="copiarTexto('{{lugar.address}}')" style="inset: auto auto 40px 170px;">Copiar Endereço</button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        function copiarTexto(address) {
+            // Cria um elemento de área de texto temporário
+            var elementoTemporario = document.createElement("textarea");
+            elementoTemporario.value = address;
+
+            // Adiciona o elemento de área de texto à página
+            document.body.appendChild(elementoTemporario);
+
+            // Seleciona o texto no elemento de área de texto
+            elementoTemporario.select();
+            elementoTemporario.setSelectionRange(0, 99999); // Para dispositivos móveis
+
+            // Copia o texto para a área de transferência
+            document.execCommand("copy");
+
+            // Remove o elemento de área de texto temporário
+            document.body.removeChild(elementoTemporario);
+
+        }
+    </script>
+
+   
 {% endblock %}

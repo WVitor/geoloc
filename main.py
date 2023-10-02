@@ -69,14 +69,30 @@ async def places():
 
         for place in brute_places.get("results"):
             if place.get("opening_hours") and place.get("opening_hours").get("open_now"):
-                lugares.append({
-                    "name": place.get("name"),
-                    "address": place.get("vicinity"),
-                    "rating": place.get("rating"),
-                    "types": place.get("types"),
-                    "location": place.get("geometry").get("location"),
-                    "status": 'Aberto'
-            })
+                if(place.get("photos") != None):
+                    photo_reference = place.get("photos")[0].get("photo_reference")
+                    photo = req.get(f"https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference={photo_reference}&key={env('MAPS_KEY')}")
+                    lugares.append({
+                        "key": place.get("place_id"),
+                        "name": place.get("name"),
+                        "address": place.get("vicinity"),
+                        "rating": place.get("rating"),
+                        "types": place.get("types"),
+                        "location": place.get("geometry").get("location"),
+                        "status": 'Aberto',
+                        "photo": photo.url
+                    })
+                else:
+                    lugares.append({
+                        "key": place.get("place_id"),
+                        "name": place.get("name"),
+                        "address": place.get("vicinity"),
+                        "rating": place.get("rating"),
+                        "types": place.get("types"),
+                        "location": place.get("geometry").get("location"),
+                        "status": 'Aberto',
+                        "photo": "https://static.thenounproject.com/png/3083030-200.png"
+                    })
         
         return render_template('pages/places.html', title='Lugares', lugares=lugares)
         #return redirect(url_for('places', lugares=lugares))
