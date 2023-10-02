@@ -1,0 +1,61 @@
+{% extends 'index.html' %}
+
+{% block content %}
+    <div class="place-header">
+        <h2 class="font-helvetica" style="margin-bottom: 10px; color: #4A49C5; font-size: 35px;">{{title}}</h2>
+        {% include "components/routesForm.html" %}
+    </div>
+    
+    <div class="title-container">
+        <h2 style="color: #4A49C5; font-size: 25px;" class="font-helvetica" >Veja a melhor rota para seu destino.</h2>
+    </div>
+
+    <div class="map-container">
+        <div id="map" style="height: 500px;" class="map"></div>
+        <div id="sidebar" class="sidebar"></div>
+    </div>
+    
+    <script src="https://maps.googleapis.com/maps/api/js?key={{maps_key}}"></script>
+    <script>
+        async function initMap() {
+            let origem = document.getElementById('SearchLocationId').value;
+            let destino = document.getElementById('SearchDestinationId').value;
+            
+            let geocode = await fetch(`https://api-geoloc-iot.onrender.com/maps/geocode`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    address: origem
+                })
+            }).then(res => res.json())
+            
+            const directionsRenderer = new google.maps.DirectionsRenderer();
+            const directionsService = new google.maps.DirectionsService();
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 15,
+                center: { lat: geocode[0].geometry.location.lat, lng: geocode[0].geometry.location.lng },
+                disableDefaultUI: true,
+            });
+
+            directionsRenderer.setMap(map);
+            directionsRenderer.setPanel(document.getElementById("sidebar"));
+            
+            var request = {
+                origin: origem,
+                destination: destino,
+                travelMode: 'DRIVING'
+            };
+
+            await directionsService
+            .route(request)
+            .then((response) => {
+                directionsRenderer.setDirections(response);
+            })
+            .catch((e) => window.alert("Directions request failed due to " + status));
+        
+        }
+   </script>
+   
+{% endblock %}

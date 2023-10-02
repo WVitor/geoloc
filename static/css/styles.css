@@ -164,6 +164,10 @@ color: #fff;
     padding: 5px;
     width: 250px; /* Ajuste a largura conforme necessário */
 }
+.location-div input::placeholder{
+    color: #4A49C5;
+    opacity: 0.5;
+}
 
 /* Estilo do botão de localização */
 .location-button {
@@ -380,4 +384,26 @@ color: #fff;
 
 .material-symbols-outlined {
   vertical-align: middle;
+}
+
+.map-container{
+    height: 100%;
+    display: flex;
+}
+
+.sidebar {
+    flex-basis: 15rem;
+    flex-grow: 1;
+    padding: 1rem;
+    max-width: 30rem;
+    height: 100%;
+    box-sizing: border-box;
+    overflow: auto;
+  }
+  
+.map {
+    padding-top: 16px;
+    flex-basis: 0;
+    flex-grow: 4;
+    height: 100%;
 }

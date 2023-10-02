@@ -99,6 +99,11 @@ async def places():
     elif request.method == 'GET':
         return render_template('pages/places.html', title='Lugares', lugares=lugares)
 
+@app.route("/rotas", methods=['GET', "POST"])
+async def rotas():
+    if request.method == 'GET':
+        return render_template('pages/rotas.html', title='Rotas', maps_key=env("MAPS_KEY"))
+
 @app.route('/', methods=['GET'])
 async def index():
     return render_template('pages/home.html', title='Home')
