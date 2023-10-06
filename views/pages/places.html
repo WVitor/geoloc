@@ -2,8 +2,12 @@
 
 {% block content %}
     <div class="place-header">
-        {% if lugares %}
-            <p class="font-helvetica"  style="margin-bottom: 10px; color: #4A49C5; font-size: 35px;">Foram encontrados {{ lugares|length }} lugares.</p>
+        {% if lugares or error %}
+            {% if error %}
+                <p class="font-helvetica"  style="margin-bottom: 10px; color: #4A49C5; font-size: 35px;">{{error}}</p>
+            {% else %}
+                <p class="font-helvetica"  style="margin-bottom: 10px; color: #4A49C5; font-size: 35px;">Foram encontrados {{ lugares|length }} lugares.</p>
+            {% endif %}
         {% else %}
             <h2 class="font-helvetica" style="margin-bottom: 10px; color: #4A49C5; font-size: 35px;">{{title}}</h2>
         {% endif %}
@@ -39,23 +43,13 @@
 
     <script>
         function copiarTexto(address) {
-            // Cria um elemento de área de texto temporário
             var elementoTemporario = document.createElement("textarea");
             elementoTemporario.value = address;
-
-            // Adiciona o elemento de área de texto à página
             document.body.appendChild(elementoTemporario);
-
-            // Seleciona o texto no elemento de área de texto
             elementoTemporario.select();
-            elementoTemporario.setSelectionRange(0, 99999); // Para dispositivos móveis
-
-            // Copia o texto para a área de transferência
+            elementoTemporario.setSelectionRange(0, 99999);
             document.execCommand("copy");
-
-            // Remove o elemento de área de texto temporário
             document.body.removeChild(elementoTemporario);
-
         }
     </script>
 

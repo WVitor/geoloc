@@ -57,9 +57,11 @@ async def geocode():
     
     if not address:
         return jsonify({"error": "Invalid request parameters"}), 400
-    
-    geocode_result = gmaps.geocode(address)
-    
+    try:
+        geocode_result = gmaps.geocode(address)
+    except:
+        return jsonify({"error": "Invalid address"}), 400
+
     return jsonify(geocode_result), 200
 
 @maps_api_routes.route("/places", methods=['POST'])

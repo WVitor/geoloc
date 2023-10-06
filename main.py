@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 load_dotenv()
-
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from weasyprint import HTML
+from flask import Flask, render_template, request, redirect, url_for
 from flask_jwt_extended import JWTManager
 import requests as req
 from datetime import timedelta
@@ -20,11 +20,6 @@ gmaps = googlemaps.Client(key=env("MAPS_KEY"))
 
 app = Flask(__name__, template_folder='views', static_folder='static')
 
-### SESSION CONFIG ###
-# app.config['SESSION_TYPE'] = 'filesystem'
-# app.config['SESSION_PERMANENT'] = False
-# Session(app)
-# app.secret_key = env("SESSION_SECRET")
 
 ### CORS CONFIG ###
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -56,17 +51,24 @@ async def places():
         lugares.clear()
         location_address = request.form.get("location")
         location_place = request.form.get("place")
-        radius = 5000
+        radius = 3000
 
         if not location_address or not location_place:
-            return redirect(url_for('places'))
+            return render_template('pages/places.html', title='Lugares', lugares=lugares, error="Informe um endereço valido.")
+        
+        try:
+            location_result = gmaps.geocode(location_address)[0].get("geometry").get("location")
+        except:
+            return render_template('pages/places.html', title='Lugares', lugares=lugares, error="Informe um endereço valido.")
 
-        location_result = gmaps.geocode(location_address)[0].get("geometry").get("location")
         location_lat_lng = f"{location_result.get('lat')},{location_result.get('lng')}"
         maps_api = Maps_api()
-
+        
         brute_places = maps_api.get_places(location_lat_lng, location_place, radius)
 
+        if not brute_places.get("results"):
+            return render_template('pages/places.html', title='Lugares', lugares=lugares, error= "Não foi possivel localizar lugares abertos proximos a esta localização.")
+        
         for place in brute_places.get("results"):
             if place.get("opening_hours") and place.get("opening_hours").get("open_now"):
                 if(place.get("photos") != None):
@@ -106,7 +108,7 @@ async def rotas():
 
 @app.route('/', methods=['GET'])
 async def index():
-    return render_template('pages/home.html', title='Home')
+    return redirect(url_for('places', lugares=[]))
 
 if __name__ == '__main__':
     app.run(debug=True)

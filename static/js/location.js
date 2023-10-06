@@ -1,4 +1,5 @@
 async function FindLocation(lat, lng){
+    console.log(lat, lng)
     await fetch('https://api-geoloc-iot.onrender.com/maps/reverse-geocode', {
         method: 'POST',
         headers: {
@@ -11,6 +12,7 @@ async function FindLocation(lat, lng){
     })
     .then(res => res.json())
     .then(data => {
+        console.log(data);
         let filterData = null;
         if(Array.isArray(data)){
             filterData = data.filter((item) => {
@@ -39,8 +41,12 @@ function LocationError(err){
 }
 
 async function onClickLocation(){
-    navigator.geolocation.watchPosition(LocationSucess, LocationError);
-    //navigator.geolocation.getCurrentPosition(LocationSucess, LocationError);
+    //navigator.geolocation.watchPosition(LocationSucess, LocationError);
+    if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(LocationSucess, LocationError);
+    }else{
+        alert("Seu navegador não suporta a ferramenta de geolocalização.");
+    }
 }
 
 
