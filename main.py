@@ -1,6 +1,5 @@
 from dotenv import load_dotenv
 load_dotenv()
-from weasyprint import HTML
 from flask import Flask, render_template, request, redirect, url_for
 from flask_jwt_extended import JWTManager
 import requests as req
