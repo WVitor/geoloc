@@ -1,4 +1,4 @@
-# geoloc-api
+# geoloc
  
 **Configurações de Ambiente virtual** 
 - Windows: `/.venvWindows/Scripts/activate`
