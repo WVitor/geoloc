@@ -1,8 +1,9 @@
 
 class Feedback():
     def __init__(self):
-        self.id= None
-        self.feed= None
+        self.id = None
+        self.feed = None
+        self.msg = ""
 
     def get_id(self):
         return self.id
@@ -16,3 +17,8 @@ class Feedback():
     def set_feed(self, feed):
         self.feed = feed
        
+    def get_msg(self):
+        return self.msg
+    
+    def set_msg(self, msg: str):
+        self.msg = msg

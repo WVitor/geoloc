@@ -1,49 +1,82 @@
-<div id="feedback-box" style="position: fixed; bottom: 10px; right: 10px; width: 300px; height: 100px; background-color: white; border: 1px solid #4A49C5; box-shadow: 5px 5px 10px #4A49C5;">
-    <div id="feedback-header" style="display: flex; align-items: center; justify-content: space-between; padding: 10px;">
-      <p style="font-weight: bold; text-align: center; width: 270px; color: #4A49C5;">Gostou do Resultado?</p>
-      <button id="close-button" style="border: none; background-color: transparent; cursor: pointer; color: #4A49C5;">X</button>
+<div id="feedback-box"
+    style="position: fixed; bottom: 10px; right: 10px; width: 300px; height: 100px; background-color: white; border: 1px solid #4A49C5; box-shadow: 5px 5px 10px #4A49C5;">
+    <div id="feedback-header"
+        style="display: flex; align-items: center; justify-content: space-between; padding: 10px;">
+        <p id="text-header" style="font-weight: bold; text-align: center; width: 270px; color: #4A49C5;">Gostou do Resultado?</p>
+        <button id="close-button"
+            style="border: none; background-color: transparent; cursor: pointer; color: #4A49C5;">X</button>
     </div>
-    <div id="feedback-body" style="display: flex; align-items: center; justify-content: center; padding: 10px; margin-bottom: 10px; height: 60px;">
+    <div id="feedback-body"
+        style="display: flex; align-items: center; justify-content: center; padding: 10px; margin-bottom: 10px; height: 60px;">
         <button id="no-button" class="submit-btn" style="margin-right: 10px;">Não</button>
         <button id="yes-button" class="submit-btn" style="margin-left: 10px;">Sim</button>
+        <textarea id="msg" class="feedback-msg" placeholder=" Nos deixa um feedback." maxlength="125"></textarea>
+        <button id="msg-summit" class="submit-btn" style="display: none; padding: 0.5em; margin-left: 110px;">Enviar</button>
     </div>
 </div>
-  
+
 <script>
     var feedbackBox = document.getElementById("feedback-box");
     var closeButton = document.getElementById("close-button");
     var yesButton = document.getElementById("yes-button");
     var noButton = document.getElementById("no-button");
+    var msgSummit = document.getElementById("msg-summit");
+    var msg = document.getElementById("msg");
+    var feedbackBody = document.getElementById("feedback-body");
 
-    closeButton.addEventListener("click", function() {
-            feedbackBox.style.display = "none";
+    closeButton.addEventListener("click", function () {
+        feedbackBox.style.display = "none";
     });
 
-    yesButton.addEventListener("click", async function() {
+    yesButton.addEventListener("click", async function () {
         await fetch("/feedback", {
             method: "POST",
             body: JSON.stringify({
                 feed: true
             })
-        }).catch(err=>console.log(err))
-        .finally(() => {
-            feedbackBox.style.display = "none"
-            alert("Obrigado pelo seu feedback!")
-        })
+        }).catch(err => console.log(err))
+            .finally(() => {
+                var textHeader = document.getElementById("text-header")
+                textHeader.textContent = "Obrigado pelo seu feedback!"
+                yesButton.style.display = "none"
+                noButton.style.display = "none"
+                closeButton.style.display = "none"
+                feedbackBox.style.height = 45 + "px"
+                setTimeout(() => {
+                    feedbackBox.style.display = "none"
+                }, 3000)
+            })
     });
 
-    noButton.addEventListener("click", async function() {
+    noButton.addEventListener("click", async function () {
+        feedbackBox.style.height = 160 + "px"
+        feedbackBody.style.display = "block"
+        feedbackBody.style.height = 110 + "px"
+        yesButton.style.display = "none"
+        noButton.style.display = "none"
+        msg.style.display = "block"
+        msgSummit.style.display = "block"
+    });
+
+    msgSummit.addEventListener("click", async function () {
         await fetch("/feedback", {
             method: "POST",
             body: JSON.stringify({
-                feed: false
+                feed: false,
+                msg: msg.value
             })
         })
-        .then(res => console.log(res.json()))
-        .catch(err=>console.log(err))
-        .finally(() => {
-            feedbackBox.style.display = "none"
-            alert("Desculpe, vamos melhorar.")
-        })
+            .catch(err => console.log(err))
+            .finally(() => {
+                var textHeader = document.getElementById("text-header")
+                textHeader.textContent = "Obrigado pelo seu feedback!"
+                closeButton.style.display = "none"
+                msg.style.display = "none"
+                msgSummit.style.display = "none"
+                feedbackBox.style.height = 45 + "px"
+                setTimeout(() => {
+                    feedbackBox.style.display = "none"
+                }, 3000)
+            })
     });
 </script>

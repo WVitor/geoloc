@@ -407,3 +407,17 @@ color: #fff;
     flex-grow: 4;
     height: 100%;
 }
+
+.feedback-msg{
+    display: none; 
+    width: 100%; 
+    margin-bottom: 5px;
+    outline: auto;
+    outline-color: #4A49C5;
+    resize: none;
+}
+
+.feedback-msg::placeholder{
+    color: #4A49C5;
+    opacity: 0.5;
+}

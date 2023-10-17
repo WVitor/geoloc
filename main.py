@@ -9,7 +9,7 @@ from services.Maps_api import Maps_api
 from flask_cors import CORS
 #from flask_session import Session
 import googlemaps
-from dao.feedbackDao import inserir_feedback, criar_tabela_feedback
+from dao.feedbackDao import inserir_feedback, alterar_tabela_feedback
 from model.feedback import Feedback
 import json
 
@@ -49,20 +49,21 @@ async def contato():
 async def feedback():
     if request.method == 'POST' :
         try:
-        
             data = json.loads(request.get_data())
             feed = data.get("feed")
-            
+            msg = data.get("msg")
+
             if feed != True and feed != False:
                 return jsonify({"error": "Invalid request parameters"}), 400
             
-            print(feed)
             feedback = Feedback()
             feedback.set_feed(feed)
-    
+       
+            if feed == False and msg:
+                feedback.set_msg(msg)
+
             inserir_feedback(feedback)
             return jsonify({"success": "Feedback enviado com sucesso.", "status": 200})
-        
         except:
             return jsonify({"error": "Não foi possivel enviar o feedback.", "status": 500})
 
