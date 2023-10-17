@@ -1,0 +1,49 @@
+<div id="feedback-box" style="position: fixed; bottom: 10px; right: 10px; width: 300px; height: 100px; background-color: white; border: 1px solid #4A49C5; box-shadow: 5px 5px 10px #4A49C5;">
+    <div id="feedback-header" style="display: flex; align-items: center; justify-content: space-between; padding: 10px;">
+      <p style="font-weight: bold; text-align: center; width: 270px; color: #4A49C5;">Gostou do Resultado?</p>
+      <button id="close-button" style="border: none; background-color: transparent; cursor: pointer; color: #4A49C5;">X</button>
+    </div>
+    <div id="feedback-body" style="display: flex; align-items: center; justify-content: center; padding: 10px; margin-bottom: 10px; height: 60px;">
+        <button id="no-button" class="submit-btn" style="margin-right: 10px;">Não</button>
+        <button id="yes-button" class="submit-btn" style="margin-left: 10px;">Sim</button>
+    </div>
+</div>
+  
+<script>
+    var feedbackBox = document.getElementById("feedback-box");
+    var closeButton = document.getElementById("close-button");
+    var yesButton = document.getElementById("yes-button");
+    var noButton = document.getElementById("no-button");
+
+    closeButton.addEventListener("click", function() {
+            feedbackBox.style.display = "none";
+    });
+
+    yesButton.addEventListener("click", async function() {
+        await fetch("/feedback", {
+            method: "POST",
+            body: JSON.stringify({
+                feed: true
+            })
+        }).catch(err=>console.log(err))
+        .finally(() => {
+            feedbackBox.style.display = "none"
+            alert("Obrigado pelo seu feedback!")
+        })
+    });
+
+    noButton.addEventListener("click", async function() {
+        await fetch("/feedback", {
+            method: "POST",
+            body: JSON.stringify({
+                feed: false
+            })
+        })
+        .then(res => console.log(res.json()))
+        .catch(err=>console.log(err))
+        .finally(() => {
+            feedbackBox.style.display = "none"
+            alert("Desculpe, vamos melhorar.")
+        })
+    });
+</script>

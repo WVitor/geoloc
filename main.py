@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 load_dotenv()
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, jsonify, redirect, url_for
 from flask_jwt_extended import JWTManager
 import requests as req
 from datetime import timedelta
@@ -9,7 +9,9 @@ from services.Maps_api import Maps_api
 from flask_cors import CORS
 #from flask_session import Session
 import googlemaps
-
+from dao.feedbackDao import inserir_feedback, criar_tabela_feedback
+from model.feedback import Feedback
+import json
 
 from routes.Weather_api_routes import weather_api_routes
 from routes.Maps_api_routes import maps_api_routes
@@ -42,6 +44,27 @@ app.register_blueprint(weather_api_routes, url_prefix='/weather')
 async def contato():
     return render_template('pages/contato.html', title='Contato')
 
+
+@app.route("/feedback", methods=["POST"])
+async def feedback():
+    if request.method == 'POST' :
+        try:
+        
+            data = json.loads(request.get_data())
+            feed = data.get("feed")
+            
+            if feed != True and feed != False:
+                return jsonify({"error": "Invalid request parameters"}), 400
+            
+            print(feed)
+            feedback = Feedback()
+            feedback.set_feed(feed)
+    
+            inserir_feedback(feedback)
+            return jsonify({"success": "Feedback enviado com sucesso.", "status": 200})
+        
+        except:
+            return jsonify({"error": "Não foi possivel enviar o feedback.", "status": 500})
 
 @app.route("/places", methods=['GET', "POST"])
 async def places():
