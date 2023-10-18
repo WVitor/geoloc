@@ -18,41 +18,86 @@
         <h2 style="color: #4A49C5; font-size: 25px;" class="font-helvetica" >Busque lugares proximos a você.</h2>
     </div>
 
-    <div class="place-main"> 
-        {% for lugar in lugares %}
-        <div class = "card">
-            <img src="{{lugar.photo}}" class="card-img" alt="{{lugar.name}}">
-            <div class="card-content">
-                <h2 class="card-h2">
-                    {{lugar.name}}
-                </h2>
-                <p class="card-p">
-                    Endereço: {{lugar.address}}
-                </p>
-                <a href="https://www.google.com/maps/search/{{lugar.address}}" target="_blank" class="card-a" style="inset: auto auto 40px 30px;">
-                    Maps
-                </a>
-                <a href="https://waze.com/ul?q={{lugar.address}}" target="_blank" class="card-a" style="inset: auto auto 40px 100px;">
-                    Waze
-                </a>
-                <button onclick="copiarTexto('{{lugar.address}}')" style="inset: auto auto 40px 170px;">Copiar Endereço</button>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-
+    <div id="map"></div>
+    
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCXejMQHQHVukTjPVTiaPyEuaBP1Rs0Mtg" async defer></script>
     <script>
-        function copiarTexto(address) {
-            var elementoTemporario = document.createElement("textarea");
-            elementoTemporario.value = address;
-            document.body.appendChild(elementoTemporario);
-            elementoTemporario.select();
-            elementoTemporario.setSelectionRange(0, 99999);
-            document.execCommand("copy");
-            document.body.removeChild(elementoTemporario);
-        }
-    </script>
+        async function initMapp(){
+            console.log("entrou")
+            var placeBtnSubmit = document.getElementById('place-smt');
+            var placeInput = document.getElementById('SearchLocationId');
+            var placeSelect = document.getElementById('places');
 
+            await fetch("/get_places", {
+                method: "POST",
+                body: JSON.stringify({
+                    location: placeInput.value,
+                    place: placeSelect.value
+                })
+            })
+            .then(res => res.json())
+            .then(lugares => {
+                console.log(lugares.result)
+                /**/
+                var divMap = document.getElementById("map");
+                divMap.style.height = 500 + "px";
+                divMap.style.width = 100 + "%";
+                var map = new google.maps.Map(divMap, {
+                    center: lugares["location"],
+                    zoom: 15,
+                }); 
+                lugares.result.forEach((lugar, index)=> {
+                    var marker = new google.maps.Marker({
+                        position: lugar.location,
+                        map: map,
+                        title: lugar.title,
+                    });
+
+                    var markerContent = document.createElement("div");
+                    markerContent.className = "marker";
+                    markerContent.textContent = index + 1;
+
+                    marker.addListener("click", function () {
+                        var infoWindow = new google.maps.InfoWindow({
+                        content: buildContent(lugar),
+                        });
+                        infoWindow.open(map, marker);
+                    });
+
+                });
+            })
+            .catch(err => console.log(err))
+        }
+
+        function buildContent(property) {
+            const content = document.createElement("div");
+
+            content.classList.add("property");
+            content.innerHTML = `
+            <div class = "card">
+                <img src="${property.content.photo}" class="card-img" alt="${property.title}">
+                <div class="card-content">
+                    <h2 class="card-h2">
+                        ${property.title}
+                    </h2>
+                    <p class="card-p">
+                        Endereço: ${property.content.address}
+                    </p>
+                    <a href="https://www.google.com/maps/search/${property.content.address}" target="_blank" class="card-a" style="inset: auto auto 40px 30px;">
+                        Maps
+                    </a>
+                    <a href="https://waze.com/ul?q=${property.content.address}" target="_blank" class="card-a" style="inset: auto auto 40px 100px;">
+                        Waze
+                    </a>
+                    <button onclick="copiarTexto('${property.content.address}')" style="inset: auto auto 40px 170px;">Copiar Endereço</button>
+                </div>
+            </div>
+            `
+
+            return content;
+        }
+
+    </script>
     {% if lugares %}
         {% include "components/feedback.html" %}
     {% endif %}

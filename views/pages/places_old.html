@@ -1,0 +1,59 @@
+{% extends 'index.html' %}
+
+{% block content %}
+    <div class="place-header">
+        {% if lugares or error %}
+            {% if error %}
+                <p class="font-helvetica"  style="margin-bottom: 10px; color: #4A49C5; font-size: 35px;">{{error}}</p>
+            {% else %}
+                <p class="font-helvetica"  style="margin-bottom: 10px; color: #4A49C5; font-size: 35px;">Foram encontrados {{ lugares|length }} lugares.</p>
+            {% endif %}
+        {% else %}
+            <h2 class="font-helvetica" style="margin-bottom: 10px; color: #4A49C5; font-size: 35px;">{{title}}</h2>
+        {% endif %}
+        {% include "components/placesForm.html" %}
+    </div> 
+    
+    <div class="title-container">
+        <h2 style="color: #4A49C5; font-size: 25px;" class="font-helvetica" >Busque lugares proximos a você.</h2>
+    </div>
+
+    <div class="place-main"> 
+        {% for lugar in lugares %}
+        <div class = "card">
+            <img src="{{lugar.photo}}" class="card-img" alt="{{lugar.name}}">
+            <div class="card-content">
+                <h2 class="card-h2">
+                    {{lugar.name}}
+                </h2>
+                <p class="card-p">
+                    Endereço: {{lugar.address}}
+                </p>
+                <a href="https://www.google.com/maps/search/{{lugar.address}}" target="_blank" class="card-a" style="inset: auto auto 40px 30px;">
+                    Maps
+                </a>
+                <a href="https://waze.com/ul?q={{lugar.address}}" target="_blank" class="card-a" style="inset: auto auto 40px 100px;">
+                    Waze
+                </a>
+                <button onclick="copiarTexto('{{lugar.address}}')" style="inset: auto auto 40px 170px;">Copiar Endereço</button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        function copiarTexto(address) {
+            var elementoTemporario = document.createElement("textarea");
+            elementoTemporario.value = address;
+            document.body.appendChild(elementoTemporario);
+            elementoTemporario.select();
+            elementoTemporario.setSelectionRange(0, 99999);
+            document.execCommand("copy");
+            document.body.removeChild(elementoTemporario);
+        }
+    </script>
+
+    {% if lugares %}
+        {% include "components/feedback.html" %}
+    {% endif %}
+{% endblock %}
