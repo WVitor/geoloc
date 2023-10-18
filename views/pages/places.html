@@ -63,6 +63,16 @@
                             radius: 3000,
                     });
 
+                    var user = new google.maps.Marker({
+                        map,
+                        position: lugares.location,
+                        title: "Você está aqui!",
+                        icon: {
+                            url: "/static/img/user.png",
+                            scaledSize: new google.maps.Size(30, 30),
+                        },
+                    })
+
                     lugares.result.forEach((lugar, index)=> {
                         var marker = new google.maps.Marker({
                             position: lugar.location,
@@ -70,7 +80,7 @@
                             title: lugar.title,
                             icon: {
                                 url: "/static/img/icon.png",
-                                scaledSize: new google.maps.Size(25, 40),
+                                scaledSize: new google.maps.Size(30, 30),
                             },
                         });
 
