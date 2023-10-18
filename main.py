@@ -66,63 +66,55 @@ async def feedback():
             return jsonify({"success": "Feedback enviado com sucesso.", "status": 200})
         except:
             return jsonify({"error": "Não foi possivel enviar o feedback.", "status": 500})
-
+    
 @app.route("/places", methods=['GET', "POST"])
 async def places():
-    lugares = []
+    if request.method == 'GET':
+        return render_template('pages/places.html', title='Lugares', maps_key=env("MAPS_KEY"))
+
+@app.route("/get_places", methods=['POST'])
+async def get_places():
     if request.method == 'POST':
-        lugares.clear()
-        location_address = request.form.get("location")
-        location_place = request.form.get("place")
+        lugares = {}
+        data = json.loads(request.get_data())
+        location_address = data.get("location")
+        location_place = data.get("place")
         radius = 3000
 
         if not location_address or not location_place:
-            return render_template('pages/places.html', title='Lugares', lugares=lugares, error="Informe um endereço valido.")
+            return jsonify({"error": "Informe um endereço valido."}), 400
         
         try:
             location_result = gmaps.geocode(location_address)[0].get("geometry").get("location")
+            lugares.update({"location": location_result})
         except:
-            return render_template('pages/places.html', title='Lugares', lugares=lugares, error="Informe um endereço valido.")
+            return jsonify({"error":"Informe um endereço valido."}), 400
 
         location_lat_lng = f"{location_result.get('lat')},{location_result.get('lng')}"
+        
         maps_api = Maps_api()
         
         brute_places = maps_api.get_places(location_lat_lng, location_place, radius)
 
         if not brute_places.get("results"):
-            return render_template('pages/places.html', title='Lugares', lugares=lugares, error= "Não foi possivel localizar lugares abertos proximos a esta localização.")
+            return jsonify({"error":"Não foi possivel localizar lugares abertos, proximos a esta localização."}), 400
         
+        lugares.update({"result": []})
         for place in brute_places.get("results"):
-            if place.get("opening_hours") and place.get("opening_hours").get("open_now"):
-                if(place.get("photos") != None):
-                    photo_reference = place.get("photos")[0].get("photo_reference")
-                    photo = req.get(f"https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference={photo_reference}&key={env('MAPS_KEY')}")
-                    lugares.append({
-                        "key": place.get("place_id"),
-                        "name": place.get("name"),
-                        "address": place.get("vicinity"),
-                        "rating": place.get("rating"),
-                        "types": place.get("types"),
-                        "location": place.get("geometry").get("location"),
-                        "status": 'Aberto',
-                        "photo": photo.url
-                    })
-                else:
-                    lugares.append({
-                        "key": place.get("place_id"),
-                        "name": place.get("name"),
-                        "address": place.get("vicinity"),
-                        "rating": place.get("rating"),
-                        "types": place.get("types"),
-                        "location": place.get("geometry").get("location"),
-                        "status": 'Aberto',
-                        "photo": "https://static.thenounproject.com/png/3083030-200.png"
-                    })
+            photo = req.get(f"https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference={place.get('photos')[0].get('photo_reference')}&key={env('MAPS_KEY')}") if place.get("photos") != None else None
+            lugares.get("result").append({
+                "title": place.get("name"),
+                "location": place.get("geometry").get("location"),
+                "content": {
+                    "status": 'Aberto' if place.get("opening_hours") and place.get("opening_hours").get("open_now") else 'Fechado',
+                    "photo": photo.url if photo != None else "https://static.thenounproject.com/png/3083030-200.png",
+                    "address": place.get("vicinity"),
+                    "rating": place.get("rating"),
+                    "types": place.get("types")
+                }
+        })
         
-        return render_template('pages/places.html', title='Lugares', lugares=lugares)
-        #return redirect(url_for('places', lugares=lugares))
-    elif request.method == 'GET':
-        return render_template('pages/places.html', title='Lugares', lugares=lugares)
+        return jsonify(lugares), 200
 
 @app.route("/rotas", methods=['GET', "POST"])
 async def rotas():

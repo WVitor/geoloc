@@ -2,46 +2,126 @@
 
 {% block content %}
     <div class="place-header">
-        {% if lugares or error %}
-            {% if error %}
-                <p class="font-helvetica"  style="margin-bottom: 10px; color: #4A49C5; font-size: 35px;">{{error}}</p>
-            {% else %}
-                <p class="font-helvetica"  style="margin-bottom: 10px; color: #4A49C5; font-size: 35px;">Foram encontrados {{ lugares|length }} lugares.</p>
-            {% endif %}
-        {% else %}
-            <h2 class="font-helvetica" style="margin-bottom: 10px; color: #4A49C5; font-size: 35px;">{{title}}</h2>
-        {% endif %}
+        <h2 class="font-helvetica" style="margin-bottom: 10px; color: #4A49C5; font-size: 35px;">{{title}}</h2>
         {% include "components/placesForm.html" %}
     </div>
     
     <div class="title-container">
-        <h2 style="color: #4A49C5; font-size: 25px;" class="font-helvetica" >Busque lugares proximos a você.</h2>
+        <p id="text-result" class="font-helvetica" style="margin-bottom: 10px; color: #4A49C5; font-size: 35px; display: none;"></p>
+        <h2 id="text-header" style="color: #4A49C5; font-size: 25px;" class="font-helvetica" >Busque lugares proximos a você.</h2>
     </div>
 
-    <div class="place-main"> 
-        {% for lugar in lugares %}
-        <div class = "card">
-            <img src="{{lugar.photo}}" class="card-img" alt="{{lugar.name}}">
-            <div class="card-content">
-                <h2 class="card-h2">
-                    {{lugar.name}}
-                </h2>
-                <p class="card-p">
-                    Endereço: {{lugar.address}}
-                </p>
-                <a href="https://www.google.com/maps/search/{{lugar.address}}" target="_blank" class="card-a" style="inset: auto auto 40px 30px;">
-                    Maps
-                </a>
-                <a href="https://waze.com/ul?q={{lugar.address}}" target="_blank" class="card-a" style="inset: auto auto 40px 100px;">
-                    Waze
-                </a>
-                <button onclick="copiarTexto('{{lugar.address}}')" style="inset: auto auto 40px 170px;">Copiar Endereço</button>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-
+    <div id="map"></div>
+    
+    <script src="https://maps.googleapis.com/maps/api/js?key={{maps_key}}" async defer></script>
     <script>
+        async function initMapp(){
+            console.log("entrou")
+            var placeBtnSubmit = document.getElementById('place-smt');
+            var placeInput = document.getElementById('SearchLocationId');
+            var placeSelect = document.getElementById('places');
+            var textHeader = document.getElementById("text-header");
+            var textResult = document.getElementById("text-result");
+            var feedbackBox = document.getElementById("feedback-box");
+
+            if(placeInput.value == ""){
+                textHeader.style.display = "none";
+                textResult.textContent="Por favor, insira uma localização."
+                return;
+            }
+
+            await fetch("/get_places", {
+                method: "POST",
+                body: JSON.stringify({
+                    location: placeInput.value,
+                    place: placeSelect.value
+                })
+            })
+            .then(res => res.json())
+            .then(lugares => {
+                if(lugares.result && lugares.result.length > 0){
+                    feedbackBox.style.display = "block"
+                    textResult.style.display = "block";
+                    textResult.textContent = `Foram encontrados ${lugares.result.length} lugares.`;
+                    textHeader.style.display = "none";
+                    var divMap = document.getElementById("map");
+                    divMap.style.height = 500 + "px";
+                    divMap.style.width = 100 + "%";
+                    var map = new google.maps.Map(divMap, {
+                        center: lugares["location"],
+                        zoom: 13
+                    }); 
+
+                    const cityCircle = new google.maps.Circle({
+                            strokeColor: "#007bff",
+                            strokeOpacity: 0.8,
+                            strokeWeight: 2,
+                            fillColor: "#007bff",
+                            fillOpacity: 0.35,
+                            map,
+                            center: lugares.location,
+                            radius: 3000,
+                    });
+
+                    lugares.result.forEach((lugar, index)=> {
+                        var marker = new google.maps.Marker({
+                            position: lugar.location,
+                            map: map,
+                            title: lugar.title,
+                            icon: {
+                                url: "/static/img/icon.png",
+                                scaledSize: new google.maps.Size(25, 40),
+                            },
+                        });
+
+                        var markerContent = document.createElement("div");
+                        markerContent.className = "marker";
+                        markerContent.textContent = index + 1;
+
+                        marker.addListener('click', function () {
+                            var infoWindow = new google.maps.InfoWindow({
+                                content: buildContent(lugar),
+                            });
+                            infoWindow.open(map, marker);
+                        });
+                    });
+                }
+                else{
+                    textHeader.style.display = "none";
+                    textResult.textContent="Não foi possivel localizar lugares abertos, proximos a esta localização."
+                }
+            })
+            .catch(err => console.log(err))
+        }
+
+        function buildContent(property) {
+            const content = document.createElement("div");
+
+            content.classList.add("property");
+            content.innerHTML = `
+            <div class = "card">
+                <img src="${property.content.photo}" class="card-img" alt="${property.title}">
+                <div class="card-content">
+                    <h2 class="card-h2">
+                        ${property.title}
+                    </h2>
+                    <p class="card-p">
+                        Endereço: ${property.content.address}
+                    </p>
+                    <a href="https://www.google.com/maps/search/${property.content.address}" target="_blank" class="card-a" style="inset: auto auto 40px 30px;">
+                        Maps
+                    </a>
+                    <a href="https://waze.com/ul?q=${property.content.address}" target="_blank" class="card-a" style="inset: auto auto 40px 100px;">
+                        Waze
+                    </a>
+                    <button onclick="copiarTexto('${property.content.address}')" style="inset: auto auto 40px 170px;">Copiar Endereço</button>
+                </div>
+            </div>
+            `
+
+            return content;
+        }
+
         function copiarTexto(address) {
             var elementoTemporario = document.createElement("textarea");
             elementoTemporario.value = address;
@@ -51,9 +131,9 @@
             document.execCommand("copy");
             document.body.removeChild(elementoTemporario);
         }
-    </script>
 
-    {% if lugares %}
-        {% include "components/feedback.html" %}
-    {% endif %}
+    </script>
+    
+    {% include "components/feedback.html" %}
+    
 {% endblock %}
