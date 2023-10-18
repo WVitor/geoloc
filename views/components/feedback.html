@@ -1,8 +1,8 @@
 <div id="feedback-box"
-    style="position: fixed; bottom: 10px; right: 10px; width: 300px; height: 100px; background-color: white; border: 1px solid #4A49C5; box-shadow: 5px 5px 10px #4A49C5;">
+    style="position: fixed; bottom: 10px; right: 10px; width: 300px; height: 100px; background-color: white; border: 1px solid #4A49C5; box-shadow: 5px 5px 10px #4A49C5; display: none;">
     <div id="feedback-header"
         style="display: flex; align-items: center; justify-content: space-between; padding: 10px;">
-        <p id="text-header" style="font-weight: bold; text-align: center; width: 270px; color: #4A49C5;">Gostou do Resultado?</p>
+        <p id="feedback-text-header" style="font-weight: bold; text-align: center; width: 270px; color: #4A49C5;">Gostou do Resultado?</p>
         <button id="close-button"
             style="border: none; background-color: transparent; cursor: pointer; color: #4A49C5;">X</button>
     </div>
@@ -36,8 +36,8 @@
             })
         }).catch(err => console.log(err))
             .finally(() => {
-                var textHeader = document.getElementById("text-header")
-                textHeader.textContent = "Obrigado pelo seu feedback!"
+                var feedBackTextHeader = document.getElementById("feedback-text-header")
+                feedBackTextHeader.textContent = "Obrigado pelo seu feedback!"
                 yesButton.style.display = "none"
                 noButton.style.display = "none"
                 closeButton.style.display = "none"
