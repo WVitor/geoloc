@@ -38,7 +38,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="C:\Users\201903250111\Documents\gitllab\geoloc-api\venvWindows"
+VIRTUAL_ENV="C:\Users\luansilva\Documents\GIT\geoloc\venvWindows"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
