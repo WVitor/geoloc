@@ -7,9 +7,8 @@ from datetime import timedelta
 from os import getenv as env
 from services.Maps_api import Maps_api
 from flask_cors import CORS
-#from flask_session import Session
 import googlemaps
-from dao.feedbackDao import inserir_feedback, alterar_tabela_feedback
+from dao.feedbackDao import inserir_feedback
 from model.feedback import Feedback
 import json
 
@@ -20,7 +19,6 @@ from routes.Autentication_routes import autentication_routes
 gmaps = googlemaps.Client(key=env("MAPS_KEY"))
 
 app = Flask(__name__, template_folder='views', static_folder='static')
-
 
 ### CORS CONFIG ###
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -38,11 +36,6 @@ app.register_blueprint(maps_api_routes, url_prefix='/maps')
 
 ### WEATHER API
 app.register_blueprint(weather_api_routes, url_prefix='/weather')
-
-### ROUTES DEFAULT
-@app.route("/contato", methods=['GET'])
-async def contato():
-    return render_template('pages/contato.html', title='Contato')
 
 
 @app.route("/feedback", methods=["POST"])
